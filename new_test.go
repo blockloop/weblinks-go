@@ -72,3 +72,10 @@ func Test_new_should_not_set_next_if_on_last_page(t *testing.T) {
 
 	assert.Nil(t, links.Next)
 }
+
+func Test_new_should_not_break_existing_querystring(t *testing.T) {
+	links, _ := New("http://www.google.com/?foo=bar", 10, 10, 100)
+	assert.Equal(t, "bar", links.Self.Query().Get("foo"))
+	assert.Equal(t, "10", links.Self.Query().Get("page"))
+	assert.Equal(t, "10", links.Self.Query().Get("page_size"))
+}
