@@ -15,8 +15,8 @@ var (
 	linkRe = regexp.MustCompile(`<([^>]+)>; rel="([^"]+)"`)
 )
 
-// Create creates weblinks
-func Create(baseURL string, page, pageSize, totalCount int) (*WebLinks, error) {
+// New creates weblinks
+func New(baseURL string, page, pageSize, totalCount int) (*WebLinks, error) {
 	if totalCount == 0 {
 		totalCount = pageSize
 	}
@@ -63,23 +63,7 @@ func Parse(linkHeader string) (*WebLinks, error) {
 			return nil, errors.Wrapf(err, "could not parse url from rel:%s of linkHeader", rel)
 		}
 
-		switch rel {
-		case "self":
-			res.Self = link
-			continue
-		case "prev":
-			res.Prev = link
-			continue
-		case "next":
-			res.Next = link
-			continue
-		case "first":
-			res.First = link
-			continue
-		case "last":
-			res.Last = link
-			continue
-		}
+		res.SetRel(rel, link)
 	}
 	return res, nil
 }
@@ -111,6 +95,29 @@ func (w *WebLinks) LinkHeader() string {
 		items = append(items, fmt.Sprintf(`<%s>; rel="%s"`, w.Last.String(), "last"))
 	}
 	return strings.Join(items, ",\n")
+}
+
+// SetRel sets a link based on a rel string
+func (w *WebLinks) SetRel(rel string, u *url.URL) error {
+	switch strings.ToLower(rel) {
+	case "self":
+		w.Self = u
+		return nil
+	case "prev":
+		w.Prev = u
+		return nil
+	case "next":
+		w.Next = u
+		return nil
+	case "first":
+		w.First = u
+		return nil
+	case "last":
+		w.Last = u
+		return nil
+	default:
+		return errors.New("Unknown rel: " + rel)
+	}
 }
 
 func paginateURL(baseURL *url.URL, page, pageSize int) *url.URL {

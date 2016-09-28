@@ -16,7 +16,7 @@ const (
 )
 
 var (
-	testLinks, _ = Create("http://www.google.com/", 2, 10, 100)
+	testLinks, _ = New("http://www.google.com/", 2, 10, 100)
 )
 
 func Test_parse_should_set_fields(t *testing.T) {

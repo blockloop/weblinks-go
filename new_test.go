@@ -6,8 +6,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func Test_create_should_set_self_with_correct_params(t *testing.T) {
-	links, _ := Create("http://www.google.com/", 1, 10, 100)
+func Test_new_should_set_self_with_correct_params(t *testing.T) {
+	links, _ := New("http://www.google.com/", 1, 10, 100)
 	assert.NotNil(t, links.Self)
 
 	q := links.Self.Query()
@@ -17,8 +17,8 @@ func Test_create_should_set_self_with_correct_params(t *testing.T) {
 	assert.Equal(t, "10", q.Get("page_size"))
 }
 
-func Test_create_should_set_next_with_params(t *testing.T) {
-	links, _ := Create("http://www.google.com/", 1, 10, 100)
+func Test_new_should_set_next_with_params(t *testing.T) {
+	links, _ := New("http://www.google.com/", 1, 10, 100)
 	assert.NotNil(t, links.Next)
 
 	q := links.Next.Query()
@@ -28,8 +28,8 @@ func Test_create_should_set_next_with_params(t *testing.T) {
 	assert.Equal(t, "10", q.Get("page_size"))
 }
 
-func Test_create_should_set_prev_with_correct_params(t *testing.T) {
-	links, _ := Create("http://www.google.com/", 2, 10, 100)
+func Test_new_should_set_prev_with_correct_params(t *testing.T) {
+	links, _ := New("http://www.google.com/", 2, 10, 100)
 	assert.NotNil(t, links.Prev)
 
 	q := links.Prev.Query()
@@ -39,8 +39,8 @@ func Test_create_should_set_prev_with_correct_params(t *testing.T) {
 	assert.Equal(t, "10", q.Get("page_size"))
 }
 
-func Test_create_should_set_first_with_correct_params(t *testing.T) {
-	links, _ := Create("http://www.google.com/", 1, 10, 100)
+func Test_new_should_set_first_with_correct_params(t *testing.T) {
+	links, _ := New("http://www.google.com/", 1, 10, 100)
 	assert.NotNil(t, links.First)
 
 	q := links.First.Query()
@@ -50,8 +50,8 @@ func Test_create_should_set_first_with_correct_params(t *testing.T) {
 	assert.Equal(t, "10", q.Get("page_size"))
 }
 
-func Test_create_should_set_last_with_correct_params(t *testing.T) {
-	links, _ := Create("http://www.google.com/", 1, 10, 100)
+func Test_new_should_set_last_with_correct_params(t *testing.T) {
+	links, _ := New("http://www.google.com/", 1, 10, 100)
 	assert.NotNil(t, links.Last)
 
 	q := links.Last.Query()
@@ -61,14 +61,14 @@ func Test_create_should_set_last_with_correct_params(t *testing.T) {
 	assert.Equal(t, "10", q.Get("page_size"))
 }
 
-func Test_create_should_not_set_prev_if_page_less_than_2(t *testing.T) {
-	links, _ := Create("http://www.google.com/", 1, 10, 100)
+func Test_new_should_not_set_prev_if_page_less_than_2(t *testing.T) {
+	links, _ := New("http://www.google.com/", 1, 10, 100)
 
 	assert.Nil(t, links.Prev)
 }
 
-func Test_create_should_not_set_next_if_on_last_page(t *testing.T) {
-	links, _ := Create("http://www.google.com/", 10, 10, 100)
+func Test_new_should_not_set_next_if_on_last_page(t *testing.T) {
+	links, _ := New("http://www.google.com/", 10, 10, 100)
 
 	assert.Nil(t, links.Next)
 }
