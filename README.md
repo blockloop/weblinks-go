@@ -3,6 +3,8 @@
 Create pagination links for REST endpoints in accordance with RFC5988 for GO.
 If you are writing a REST API then use this library to create your "Link" headers.
 
+See usage below or view the [GoDoc](https://godoc.org/github.com/blockloop/weblinks-go).
+
 ## Usage
 
 ### `New(url string, page, pageSize, totalCount int)`
@@ -19,7 +21,7 @@ func main() {
     wl.Prev.Query().Get("page") // 1
     wl.Last.Query().Get("page") // 10
     wl.First.Query().Get("page") // 10
-  
+
     wl, err := weblinks.New("http://www.google.com", 1, 10, 100)
     wl.Prev // nil
 }
