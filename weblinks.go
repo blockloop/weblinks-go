@@ -68,6 +68,7 @@ func Parse(linkHeader string) (*WebLinks, error) {
 	return res, nil
 }
 
+// WebLinks is a set of links
 type WebLinks struct {
 	Self  *url.URL
 	Next  *url.URL
@@ -76,6 +77,7 @@ type WebLinks struct {
 	Last  *url.URL
 }
 
+// LinkHeader returns the value which should be set in the Link header
 func (w *WebLinks) LinkHeader() string {
 	items := []string{}
 
