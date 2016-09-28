@@ -11,6 +11,10 @@ import (
 	"github.com/pkg/errors"
 )
 
+var (
+	linkRe = regexp.MustCompile(`<([^>]+)>; rel="([^"]+)"`)
+)
+
 // Create creates weblinks
 func Create(baseURL string, page, pageSize, totalCount int) (*WebLinks, error) {
 	if totalCount == 0 {
@@ -46,53 +50,34 @@ func Create(baseURL string, page, pageSize, totalCount int) (*WebLinks, error) {
 // Parse parses a Link header
 func Parse(linkHeader string) (*WebLinks, error) {
 	res := &WebLinks{}
-	lineRe := regexp.MustCompile(`<([^>]+)>; rel="([^"]+)"`)
-	urlRe := regexp.MustCompile(`<([^>]+)>`)
-	relRe := regexp.MustCompile(`rel="([^"]+)"`)
 	lines := strings.Split(linkHeader, ",\n")
 
 	for _, line := range lines {
-		if !lineRe.MatchString(line) {
+		if !linkRe.MatchString(line) {
 			return nil, errors.New("invalid line in header: " + line)
 		}
-		urlMatch := urlRe.FindStringSubmatch(line)
-		relMatch := relRe.FindStringSubmatch(line)
+		matches := linkRe.FindStringSubmatch(line)
+		rel := matches[2]
+		link, err := url.Parse(matches[1])
+		if err != nil {
+			return nil, errors.Wrapf(err, "could not parse url from rel:%s of linkHeader", rel)
+		}
 
-		switch relMatch[1] {
+		switch rel {
 		case "self":
-			parsed, err := url.Parse(urlMatch[1])
-			if err != nil {
-				return nil, errors.Wrap(err, "could not parse url from rel:self of linkHeader")
-			}
-			res.Self = parsed
+			res.Self = link
 			continue
 		case "prev":
-			parsed, err := url.Parse(urlMatch[1])
-			if err != nil {
-				return nil, errors.Wrap(err, "could not parse url from rel:prev of linkHeader")
-			}
-			res.Prev = parsed
+			res.Prev = link
 			continue
 		case "next":
-			parsed, err := url.Parse(urlMatch[1])
-			if err != nil {
-				return nil, errors.Wrap(err, "could not parse url from rel:next of linkHeader")
-			}
-			res.Next = parsed
+			res.Next = link
 			continue
 		case "first":
-			parsed, err := url.Parse(urlMatch[1])
-			if err != nil {
-				return nil, errors.Wrap(err, "could not parse url from rel:first of linkHeader")
-			}
-			res.First = parsed
+			res.First = link
 			continue
 		case "last":
-			parsed, err := url.Parse(urlMatch[1])
-			if err != nil {
-				return nil, errors.Wrap(err, "could not parse url from rel:last of linkHeader")
-			}
-			res.Last = parsed
+			res.Last = link
 			continue
 		}
 	}
