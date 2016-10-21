@@ -53,11 +53,16 @@ func Test_new_should_set_first_with_correct_params(t *testing.T) {
 func Test_new_should_set_last_with_correct_params(t *testing.T) {
 	links, _ := New("http://www.google.com/", 1, 10, 100)
 	assert.NotNil(t, links.Last)
-
 	q := links.Last.Query()
 	assert.NotNil(t, q)
-
 	assert.Equal(t, "10", q.Get("page"))
+	assert.Equal(t, "10", q.Get("page_size"))
+
+	links, _ = New("http://www.google.com/", 1, 10, 101)
+	assert.NotNil(t, links.Last)
+	q = links.Last.Query()
+	assert.NotNil(t, q)
+	assert.Equal(t, "11", q.Get("page"))
 	assert.Equal(t, "10", q.Get("page_size"))
 }
 
