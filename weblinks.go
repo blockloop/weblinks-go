@@ -25,7 +25,7 @@ func New(baseURL string, page, pageSize, totalCount int) (*WebLinks, error) {
 		return nil, err
 	}
 
-	lastPage := int(math.Ceil(float64(totalCount / pageSize)))
+	lastPage := int(math.Ceil(float64(totalCount) / float64(pageSize)))
 	res := WebLinks{
 		Self:  paginateURL(parsedURL, page, pageSize),
 		First: paginateURL(parsedURL, 1, pageSize),
